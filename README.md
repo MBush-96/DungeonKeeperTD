@@ -1,7 +1,7 @@
 # DungeonKeeperTD
 
 ## Overview
-You will be controlling the inside of a dungeon, while enemies try breach and get from the entrance doors all the way to the dungeons heart. If a enemy achieves their goal to get there, your dungeon heart will lose power. If it is reduced to 0 you will lose. You can protect yourself by adding traps and buildings to fight off these enemies. However this costs gold which is only achieved by destroying a enemy. Some enemies may choose to go for your gold stash instead of your dungeon heart.
+You will be controlling the inside of a dungeon, while enemies try breach and get from the entrance doors all the way to the dungeons heart. If an enemy achieves their goal to get there, your dungeon heart will lose power. If it is reduced to 0 you will lose. You can protect yourself by adding traps and buildings to fight off these enemies. However this costs gold which is only achieved by destroying a enemy. Some enemies may choose to go for your gold stash instead of your dungeon heart.
 
 ## Rules
 1. Enemies will enter the dungeon to attack your dungeon heart, if it is reduced to 0 you lose.
@@ -15,7 +15,7 @@ You will be controlling the inside of a dungeon, while enemies try breach and ge
 1. Main menu, player can choose to play game or quit (options if time)
 <img src="https://i.imgur.com/MN4pIUF.jpg" width="500" height="250">
 
-2. ingame enemies will come from the right, pushing left to get to either the gold or dungeon heart. Players can click boxes in the left window to select traps and put them down.
+2. Enemies will come from the right, pushing left to get to either the gold or dungeon heart. Players can click boxes in the left window to select traps and put them down.
 <img src="https://i.imgur.com/Ep3Sh35.jpg" width="500" height="250">
 <img src="https://i.imgur.com/wh9tydg.jpg" width="500" height="250">
 
@@ -29,15 +29,15 @@ You will be controlling the inside of a dungeon, while enemies try breach and ge
 
 ## User Stories
 
-- When I press play the menu screen will dissapear and I will be in the game
+- When I press play the menu screen will disapear and I will be in the game
 - When the game starts enemies start spawning at the right side of the dungeon and walk towards the left
 - In my menu I started with a 500 gold
 - I click on my traps/buildings in the menu ui and click the floor and trap is placed at the position
 - When I place a trap its cost is removed from my current gold
 - When the trap triggers and collides with an enemy, the enemy is destroyed and I receive a certain amount of gold
 - If a enemy reaches my dungeon heart alive I lose one health
-- If 10 enemies in total reach my dungeon heart alive I lose the game.
-- If my dungeon heart is > 0 at the end of round 10 I am given the victory screen.
+- If 10 enemies in total reach my dungeon heart alive, I lose the game.
+- If my dungeon heart is > 0 at the end of round 10, I am given the victory screen.
 
 ## MVP
 
