@@ -24,8 +24,7 @@ You will be controlling the inside of a dungeon, while enemies try breach and ge
 ![victory](https://i.imgur.com/MMHjgdb.jpg =100x100)
 
 3. If you survive all 10 rounds the game will end and you will win.
-<img src="https://i.imgur.com/oHTz8dE.jpg" width="250" height="200">
-![defeat](https://i.imgur.com/oHTz8dE.jpg =100x100)
+<img src="https://i.imgur.com/oHTz8dE.jpg" width="300" height="300">
 
 4. If youre dungeon heart reaches 0 the game will end and you will lose.
 
