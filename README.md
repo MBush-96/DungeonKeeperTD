@@ -13,4 +13,9 @@ You will be controlling the inside of a dungeon, while enemies try breach and ge
 
 ## Wireframes
 ![startGame](https://i.imgur.com/MN4pIUF.jpg)
-Format:![alt text](url)
+
+1. Main menu, player can choose to play game or quit (options if time)
+
+![ingame](https://i.imgur.com/Ep3Sh35.jpg)
+
+2. ingame enemies will come from the right, pushing left to get to either the gold or dungeon heart. Players can click boxes in the left window to select traps and put them down.
