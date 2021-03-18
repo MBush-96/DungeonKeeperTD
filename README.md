@@ -1,7 +1,7 @@
 # DungeonKeeperTD
 
 ## Overview
-You will be controlling the inside of a dungeon, while enemies try breach and get from the entrance doors all the way to the dungeons heart. If a enemy achives their goal to get there your dungeon heart will lose power, if it is reduced to 0 you will lose. You can protect yourself by adding traps and buildings to fight off these enemies. However this costs gold which is only achieved by destroying a enemy. Some enemys may choose to go for your gold stash instead of your dungeon heart.
+You will be controlling the inside of a dungeon, while enemies try breach and get from the entrance doors all the way to the dungeons heart. If a enemy achives their goal to get there, your dungeon heart will lose power. If it is reduced to 0 you will lose. You can protect yourself by adding traps and buildings to fight off these enemies. However this costs gold which is only achieved by destroying a enemy. Some enemys may choose to go for your gold stash instead of your dungeon heart.
 
 ## Rules
 1. Enemys will enter the dungeon to attack your dungeon heart if it is reduced to 0 you lose.
@@ -29,23 +29,23 @@ You will be controlling the inside of a dungeon, while enemies try breach and ge
 
 ## User Stories
 
-When I press play the menu screen will dissapear and i will be in the game
-When the game starts enemies start spawning at the right side of the dungeon and walk towards the left
-In my menu I started with a 500 gold
-I click on my traps/buildings and click and the trap is placed at the position
-when i place a trap its cost is removed from my current gold
-when the trap triggers and collides with an enemy the enemy is destroyed and i receive a certain amount of gold
-If a enemy reaches my dungeon heart alive I lose one health
-If 10 enemies in total reach my dungeon heart alive I lose the game.
-If my dungeon heart is > 0 at the end of round 10 I am given the victory screen.
+- When I press play the menu screen will dissapear and i will be in the game
+- When the game starts enemies start spawning at the right side of the dungeon and walk towards the left
+- In my menu I started with a 500 gold
+- I click on my traps/buildings and click and the trap is placed at the position
+- when i place a trap its cost is removed from my current gold
+- when the trap triggers and collides with an enemy the enemy is destroyed and i receive a certain amount of gold
+- If a enemy reaches my dungeon heart alive I lose one health
+- If 10 enemies in total reach my dungeon heart alive I lose the game.
+- If my dungeon heart is > 0 at the end of round 10 I am given the victory screen.
 
 ## MVP
 
-enemy squares spawn at the right of the map when round starts
-move along a pre-determined path to try and get to your dungeon heart
-trap squares will trigger on a timer if enemy is colliding when trap triggers is dies and you gold count increases
-if enemy square collides with dungeon heart square your dungeon heart loses a point
-if enemys in round  === 0 stop round. start building timer (20 seconds or something) at the end of this start next round
+- enemy squares spawn at the right of the map when round starts
+- move along a pre-determined path to try and get to your dungeon heart
+- trap squares will trigger on a timer if enemy is colliding when trap triggers is dies and you gold count increases
+- if enemy square collides with dungeon heart square your dungeon heart loses a point
+- if enemys in round  === 0 stop round. start building timer (20 seconds or something) at the end of this start next round
 
 ## Stretch Goals
 
