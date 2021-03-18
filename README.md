@@ -12,20 +12,20 @@ You will be controlling the inside of a dungeon, while enemies try breach and ge
 6. If you survive round 10 then you will have repelled the invaders and you win. 
 
 ## Wireframes
+1. Main menu, player can choose to play game or quit (options if time)
 <img src="https://i.imgur.com/MN4pIUF.jpg" width="500" height="250">
 
-1. Main menu, player can choose to play game or quit (options if time)
+2. ingame enemies will come from the right, pushing left to get to either the gold or dungeon heart. Players can click boxes in the left window to select traps and put them down.
 <img src="https://i.imgur.com/Ep3Sh35.jpg" width="500" height="250">
 <img src="https://i.imgur.com/wh9tydg.jpg" width="500" height="250">
 
-2. ingame enemies will come from the right, pushing left to get to either the gold or dungeon heart. Players can click boxes in the left window to select traps and put them down.
-
+3. If you survive all 10 rounds the game will end and you will win.
 <img src="https://i.imgur.com/MMHjgdb.jpg" width="500" height="250">
 
-3. If you survive all 10 rounds the game will end and you will win.
-<img src="https://i.imgur.com/oHTz8dE.jpg" width="500" height="250">
 
 4. If youre dungeon heart reaches 0 the game will end and you will lose.
+<img src="https://i.imgur.com/oHTz8dE.jpg" width="500" height="250">
+
 
 ## User Stories
 
