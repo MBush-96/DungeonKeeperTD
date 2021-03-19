@@ -6,19 +6,11 @@ canvas.setAttribute('width', getComputedStyle(canvas).width)
 bgImage.src = './assets/mainMenuBG.jpg'
 let gameActive = true
 
-const mainMenu = () => {
-    // GETS KEY POS
-    canvas.addEventListener('click', event => {
-        let rect = canvas.getBoundingClientRect()
-        let x = event.clientX - rect.left
-        let y = event.clientY - rect.top
-        console.log('X: ' + x + ' Y: ' + y)
-    })
-    context.drawImage(bgImage, 0, 0)
-    context.fillStyle = 'white'
-    context.fillText('Dungeon Keeper', 300, 80)
-    context.font = '100px Metal Mania'
-}
+document.querySelector('.quit').addEventListener('click', () => {
+    if(confirm('Close window?')) {
+        close();
+    }
+})
 
 const checkKeysPushed = () => {
     document.addEventListener('keyup', e => {
@@ -111,6 +103,7 @@ class Enemy {
         }
     }
     move() {
+        //movement path to dungeon heart at spawnpoint 1
         if(this.spawnPoint === 1) {
             if(this.y <= 200 && this.x >= 1100) {
                 this.y += this.speed
@@ -122,6 +115,7 @@ class Enemy {
                 this.x += this.speed
             }
         }
+        // Movement path to dungeon heart at spawnpoint 2
         if(this.spawnPoint === 2) {
             if(this.x >= 870 && this.y >= 500) {
                 this.x -= this.speed
@@ -155,6 +149,8 @@ class Enemy {
     }
 }
 
+//round class use for making new round enemies and checking is all 
+//enemies in round are dead
 class Round {
     constructor(enemiesArr=[]) {
         this.enemies = enemiesArr
@@ -184,6 +180,7 @@ const walls = [
 
 const dungeonHeart = new DungeonHeart(400, 430, 150, 140)
 
+//round one enemies
 const roundOne = new Round([
     new Enemy(1, 3),
     new Enemy(1, 4),
@@ -197,7 +194,7 @@ const roundOne = new Round([
     new Enemy(2, 4),
 ])
 
-
+// control enemy movement collision and draw to screen
 const enemyControl = arr => {
     arr.forEach(enemy => {  
         enemy.render()
@@ -206,6 +203,7 @@ const enemyControl = arr => {
     })
 }
 
+//main game
 const mainGameLoop = () => {
     setInterval(() => {
         context.clearRect(0, 0, canvas.width, canvas.height)

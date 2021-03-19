@@ -7,3 +7,62 @@ canvas {
 .container {
     text-align: center;
 }
+
+.main_menu {
+    width: 1200px;
+    height: 600px;
+    background-image: url('./assets/mainMenuBG.jpg');
+}
+
+.hidden {
+    display: none;
+}
+
+.title {
+    color: white;
+    font-family: 'Metal Mania';
+    font-size: 100px;
+    margin-top: 10px;
+}
+
+.play {
+    width: 200px;
+    height: 80px;
+    padding: 0px;
+    position: relative;
+    font-family: 'Metal Mania';
+    font-size: 50px;
+    border: 2px solid white;
+    border-radius: 50%;
+    background-color: black;
+    color: white;
+    right: 250px;
+    top: 75px;
+}
+
+.play:hover {
+    cursor: pointer;
+    background-color: white;
+    color: black
+}
+
+.quit {
+    font-family: 'Metal Mania';
+    font-size: 50px;
+    border: 2px solid white;
+    border-radius: 50%;
+    background-color: black;
+    color: white;
+    width: 200px;
+    height: 80px;
+    padding: 0px;
+    position: relative;
+    top: 300px;
+    right: 100px;
+}
+
+.quit:hover {
+    cursor: pointer;
+    background-color: white;
+    color: black
+}
