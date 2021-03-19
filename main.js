@@ -4,12 +4,18 @@ const bgImage = new Image()
 canvas.setAttribute('height', getComputedStyle(canvas).height)
 canvas.setAttribute('width', getComputedStyle(canvas).width)
 bgImage.src = './assets/mainMenuBG.jpg'
-let gameActive = true
+let gameActive = false
+
 
 document.querySelector('.quit').addEventListener('click', () => {
     if(confirm('Close window?')) {
         close();
     }
+})
+document.querySelector('.play').addEventListener('click', () => {
+    document.querySelector('.main_menu').classList.add('hidden')
+    document.querySelector('canvas').classList.remove('hidden')
+    mainGameLoop()
 })
 
 const checkKeysPushed = () => {
@@ -227,4 +233,3 @@ const mainGameLoop = () => {
     }, 25)
 }
 
-//mainGameLoop()
