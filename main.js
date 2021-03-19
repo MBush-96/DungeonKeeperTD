@@ -1,9 +1,32 @@
 const canvas = document.querySelector('canvas')
 const context = canvas.getContext('2d')
-
+const bgImage = new Image()
 canvas.setAttribute('height', getComputedStyle(canvas).height)
 canvas.setAttribute('width', getComputedStyle(canvas).width)
+bgImage.src = './assets/mainMenuBG.jpg'
 let gameActive = true
+
+const mainMenu = () => {
+    // GETS KEY POS
+    canvas.addEventListener('click', event => {
+        let rect = canvas.getBoundingClientRect()
+        let x = event.clientX - rect.left
+        let y = event.clientY - rect.top
+        console.log('X: ' + x + ' Y: ' + y)
+    })
+    context.drawImage(bgImage, 0, 0)
+    context.fillStyle = 'white'
+    context.fillText('Dungeon Keeper', 300, 80)
+    context.font = '100px Metal Mania'
+}
+
+const checkKeysPushed = () => {
+    document.addEventListener('keyup', e => {
+        if(e.key === 'm') {
+            console.log('m')
+        }
+    })
+}
 
 class Wall {
     constructor(x=0, y=0, width=600, height=600, color='rgb(134, 0, 0)') {
@@ -29,14 +52,12 @@ class DungeonHeart {
         this.gold = 500
         this.health = 10
         this.alive = true
+        this.round = 1
     }
     takeDamage(other) {
-        if(this.health > 0) {
+        if(this.health >= 1) {
             this.health -= other.health
-        } else if(health === 0) {
-            this.alive = false
         }
-        console.log(this.health);
     }
     gainGold(amount) {
         this.gold += amount
@@ -47,6 +68,14 @@ class DungeonHeart {
     render() {
         context.fillStyle = this.color
         context.fillRect(this.x, this.y, this.width, this.height)
+    }
+    checkAlive() {
+        if(this.health >= 1) {
+            return true
+        } else {
+            this.alive = false
+            return false
+        }
     }
 }
 
@@ -60,12 +89,14 @@ class Enemy {
         this.health = 1
         this.alive = true
         this.speed = speed
+        this.spawnPoint = spawnPoint
+        this.endpath = false
         if(spawnPoint === 1) {
-            this.x = 1000
-            this.y = 400
+            this.x = 1100
+            this.y = 100
         } else if (spawnPoint === 2) {
-            this.x = 1000
-            this.y = 200
+            this.x = 1100
+            this.y = 500
         }
     }
     render() {        
@@ -80,25 +111,59 @@ class Enemy {
         }
     }
     move() {
-        if(this.x >= 50 && this.y <= 349) {
-            this.x -= this.speed
-        } else if(this.x <= 50 && this.y <= 450) {
-            this.y += this.speed
-        } else {
-            this.x += this.speed
+        if(this.spawnPoint === 1) {
+            if(this.y <= 200 && this.x >= 1100) {
+                this.y += this.speed
+            } else if(this.x >= 50 && this.y <= 210) {
+                this.x -= this.speed
+            } else if(this.x <= 50 && this.y <= 460) {
+                this.y += this.speed
+            } else {
+                this.x += this.speed
+            }
+        }
+        if(this.spawnPoint === 2) {
+            if(this.x >= 870 && this.y >= 500) {
+                this.x -= this.speed
+            } else if(this.x >= 850 && this.y >= 430) {
+                this.y -= this.speed
+            } else if(this.x >= 682 && this.y >= 400) {
+                this.x -= this.speed
+            } else if(this.x >= 680 && this.y >= 350) {
+                this.y -= this.speed
+            } else if(this.x >= 50 && this.y <= 350) {
+                this.x -= this.speed
+            } else if(this.x >= 40 && this.y <= 500) {
+                this.y += this.speed
+                this.endpath = true
+            } else if(this.x >= 40 && this.y >= 500) {
+                this.x += this.speed
+            }
         }
     }
-    checkCollision(other) {
+    checkCollision(other, enemyArr) {
         const horizHit = this.x >= other.x && this.x + this.width < other.x + other.width
         const vertHit = this.y >= other.y && this.y + this.height < other.y + other.height
         if(horizHit && vertHit && this.alive) {
             if (other instanceof DungeonHeart) {
-                let index  = enemies.indexOf(this)
-                enemies.splice(index, index+1)
+                let index  = enemyArr.indexOf(this)
+                enemyArr.splice(index, 1)
                 other.takeDamage(this)
             }
             this.takeDamage()
         }
+    }
+}
+
+class Round {
+    constructor(enemiesArr=[]) {
+        this.enemies = enemiesArr
+    }
+    allEnemiesDead() {
+        let allDead = this.enemies.every(enemy => {
+            enemy.alive === false
+        })
+        return allDead
     }
 }
 
@@ -119,21 +184,49 @@ const walls = [
 
 const dungeonHeart = new DungeonHeart(400, 430, 150, 140)
 
-const enemies = [
-    new Enemy(2, 8),
-    new Enemy(2)
-]
+const roundOne = new Round([
+    new Enemy(1, 3),
+    new Enemy(1, 4),
+    new Enemy(1, 3),
+    new Enemy(1, 4),
+    new Enemy(1, 5),
+    new Enemy(2, 2),
+    new Enemy(2, 4),
+    new Enemy(2, 6),
+    new Enemy(2, 2),
+    new Enemy(2, 4),
+])
 
 
-setInterval(() => {
-    context.clearRect(0, 0, canvas.width, canvas.height)
-    dungeonHeart.render()
-    walls.forEach(wall => {
-        wall.render();
-    })
-    enemies.forEach(enemy => {
+const enemyControl = arr => {
+    arr.forEach(enemy => {  
         enemy.render()
-        enemy.checkCollision(dungeonHeart)
+        enemy.checkCollision(dungeonHeart, arr)
         enemy.move()
     })
-}, 25)
+}
+
+const mainGameLoop = () => {
+    setInterval(() => {
+        context.clearRect(0, 0, canvas.width, canvas.height)
+        dungeonHeart.render()
+        checkKeysPushed()
+        walls.forEach(wall => {
+            wall.render();
+        })
+        if(dungeonHeart.round === 1) {
+            dungeonHeart.checkAlive()
+            enemyControl(roundOne.enemies)
+            if(roundOne.allEnemiesDead()) {
+                dungeonHeart.round++
+            }
+        } else if(dungeonHeart.round === 2) {
+            console.log(dungeonHeart.round)
+        }
+        if(!dungeonHeart.health === 0) {
+            return
+        }
+    }, 25)
+}
+
+//mainGameLoop()
