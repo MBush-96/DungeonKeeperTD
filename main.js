@@ -3,10 +3,10 @@ const context = canvas.getContext('2d')
 
 canvas.setAttribute('height', getComputedStyle(canvas).height)
 canvas.setAttribute('width', getComputedStyle(canvas).width)
-
+let gameActive = true
 
 class Wall {
-    constructor(x=0, y=0, width=600, height=600, color='brown') {
+    constructor(x=0, y=0, width=600, height=600, color='rgb(134, 0, 0)') {
         this.x = x
         this.y = y
         this.width = width
@@ -30,12 +30,13 @@ class DungeonHeart {
         this.health = 10
         this.alive = true
     }
-    takeDamage() {
+    takeDamage(other) {
         if(this.health > 0) {
-            this.health -= 1
+            this.health -= other.health
         } else if(health === 0) {
             this.alive = false
         }
+        console.log(this.health);
     }
     gainGold(amount) {
         this.gold += amount
@@ -50,7 +51,7 @@ class DungeonHeart {
 }
 
 class Enemy {
-    constructor(x, y, width=50, height=50, color='yellow') {
+    constructor(spawnPoint, speed=5, x=0, y=0, width=50, height=50, color='yellow') {
         this.x = x
         this.y = y
         this.width = width
@@ -58,6 +59,14 @@ class Enemy {
         this.color = color
         this.health = 1
         this.alive = true
+        this.speed = speed
+        if(spawnPoint === 1) {
+            this.x = 1000
+            this.y = 400
+        } else if (spawnPoint === 2) {
+            this.x = 1000
+            this.y = 200
+        }
     }
     render() {        
         context.fillStyle = this.color
@@ -68,6 +77,27 @@ class Enemy {
             this.health -= 1
         } else {
             this.alive = false
+        }
+    }
+    move() {
+        if(this.x >= 50 && this.y <= 349) {
+            this.x -= this.speed
+        } else if(this.x <= 50 && this.y <= 450) {
+            this.y += this.speed
+        } else {
+            this.x += this.speed
+        }
+    }
+    checkCollision(other) {
+        const horizHit = this.x >= other.x && this.x + this.width < other.x + other.width
+        const vertHit = this.y >= other.y && this.y + this.height < other.y + other.height
+        if(horizHit && vertHit && this.alive) {
+            if (other instanceof DungeonHeart) {
+                let index  = enemies.indexOf(this)
+                enemies.splice(index, index+1)
+                other.takeDamage(this)
+            }
+            this.takeDamage()
         }
     }
 }
@@ -90,8 +120,10 @@ const walls = [
 const dungeonHeart = new DungeonHeart(400, 430, 150, 140)
 
 const enemies = [
-    new Enemy(1000, 400, 50, 50)
+    new Enemy(2, 8),
+    new Enemy(2)
 ]
+
 
 setInterval(() => {
     context.clearRect(0, 0, canvas.width, canvas.height)
@@ -101,5 +133,7 @@ setInterval(() => {
     })
     enemies.forEach(enemy => {
         enemy.render()
+        enemy.checkCollision(dungeonHeart)
+        enemy.move()
     })
 }, 25)
