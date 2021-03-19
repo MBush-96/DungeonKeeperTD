@@ -36,8 +36,8 @@ canvas {
     border-radius: 50%;
     background-color: black;
     color: white;
-    right: 250px;
     top: 75px;
+    right: 100px
 }
 
 .play:hover {
@@ -58,11 +58,25 @@ canvas {
     padding: 0px;
     position: relative;
     top: 300px;
-    right: 100px;
 }
 
 .quit:hover {
     cursor: pointer;
     background-color: white;
     color: black
+}
+
+.options {
+    font-family: 'Metal Mania';
+    font-size: 50px;
+    border: 2px solid white;
+    border-radius: 50%;
+    background-color: black;
+    color: white;
+    width: 200px;
+    height: 80px;
+    padding: 0px;
+    position: relative;
+    top: 75px;
+    right: -100px;
 }

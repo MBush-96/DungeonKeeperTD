@@ -1,4 +1,5 @@
 # DungeonKeeperTD
+<img src="https://i.imgur.com/cZ68Pfj.png" width="600" height="300" >
 
 ## Overview
 You will be controlling the inside of a dungeon, while enemies try breach and get from the entrance doors all the way to the dungeons heart. If an enemy achieves their goal to get there, your dungeon heart will lose power. If it is reduced to 0 you will lose. You can protect yourself by adding traps and buildings to fight off these enemies. However this costs gold which is only achieved by destroying a enemy. Some enemies may choose to go for your gold stash instead of your dungeon heart.
