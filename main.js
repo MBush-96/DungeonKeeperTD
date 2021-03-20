@@ -1,29 +1,57 @@
 const canvas = document.querySelector('canvas')
 const context = canvas.getContext('2d')
+const menuHealthInfo = document.querySelector('.health')
+const menuGoldInfo = document.querySelector('.gold')
+const menuRoundInfo = document.querySelector('.round')
+const spikesButton = document.querySelector('.gmbo')
 const bgImage = new Image()
+
 canvas.setAttribute('height', getComputedStyle(canvas).height)
 canvas.setAttribute('width', getComputedStyle(canvas).width)
 bgImage.src = './assets/mainMenuBG.jpg'
 let gameActive = false
 
 
-document.querySelector('.quit').addEventListener('click', () => {
-    if(confirm('Close window?')) {
-        close();
-    }
-})
-document.querySelector('.play').addEventListener('click', () => {
-    document.querySelector('.main_menu').classList.add('hidden')
-    document.querySelector('canvas').classList.remove('hidden')
-    mainGameLoop()
+// document.querySelector('.quit').addEventListener('click', () => {
+//     if(confirm('Close window?')) {
+//         close();
+//     }
+// })
+// document.querySelector('.play').addEventListener('click', () => {
+//     document.querySelector('.main_menu').classList.add('hidden')
+//     document.querySelector('canvas').classList.remove('hidden')
+//     mainGameLoop()
+// })
+document.querySelector('.gmbo').addEventListener('click', () => {
+    document.querySelector('.gmbo').classList.add('selected')
 })
 
-const checkKeysPushed = () => {
-    document.addEventListener('keyup', e => {
-        if(e.key === 'm') {
-            console.log('m')
-        }
-    })
+// Add Event listener to canvas and do something if trap button is selected
+// then remove from selected
+canvas.addEventListener('click', function(event) {
+    let rect = canvas.getBoundingClientRect();
+    let x = event.clientX - rect.left;
+    let y = event.clientY - rect.top;
+    console.log("x: " + x + " y: " + y); 
+    if(spikesButton.classList.contains('selected')) {
+        console.log('true')
+        spikesButton.classList.remove('selected')
+    }
+}, false);
+// const checkKeysPushed = () => {
+//     document.onkeydown = event => {
+//         if(event.key === "m") {
+//             if(!event.repeat) {
+//                 menu.render()
+//             }
+//         }
+//     }
+// }
+
+const updateMenuInfo = () => {
+    menuHealthInfo.textContent = dungeonHeart.health
+    menuGoldInfo.textContent = dungeonHeart.gold
+    menuRoundInfo.textContent = dungeonHeart.round
 }
 
 class Wall {
@@ -149,6 +177,7 @@ class Enemy {
                 let index  = enemyArr.indexOf(this)
                 enemyArr.splice(index, 1)
                 other.takeDamage(this)
+                dungeonHeart.gold += 5
             }
             this.takeDamage()
         }
@@ -214,22 +243,24 @@ const mainGameLoop = () => {
     setInterval(() => {
         context.clearRect(0, 0, canvas.width, canvas.height)
         dungeonHeart.render()
-        checkKeysPushed()
+        updateMenuInfo()
+        // checkKeysPushed()
         walls.forEach(wall => {
             wall.render();
         })
         if(dungeonHeart.round === 1) {
             dungeonHeart.checkAlive()
             enemyControl(roundOne.enemies)
-            if(roundOne.allEnemiesDead()) {
+            if(roundOne.allEnemiesDead() && dungeonHeart.alive) {
                 dungeonHeart.round++
             }
         } else if(dungeonHeart.round === 2) {
             console.log(dungeonHeart.round)
         }
-        if(!dungeonHeart.health === 0) {
+        if(dungeonHeart.health === 0) {
             return
         }
     }, 25)
 }
 
+//mainGameLoop()

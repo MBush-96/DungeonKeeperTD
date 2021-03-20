@@ -1,3 +1,6 @@
+html {
+    background-color: black;
+}
 canvas {
     border: 2px solid black;
     width: 1200px;
@@ -6,6 +9,26 @@ canvas {
 
 .container {
     text-align: center;
+}
+
+.game_menu {
+    background-color: black;
+    color: white;
+    margin-top: 0px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+}
+.buttons {
+    background-color: black;
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+
+.game_menu p {
+    margin-top: 0px;
+    margin-bottom: 0px;
 }
 
 .main_menu {
@@ -85,4 +108,9 @@ canvas {
     cursor: pointer;
     background-color: white;
     color: black
+}
+
+.selected {
+    background-color: red;
+    border: 1px solid;
 }
