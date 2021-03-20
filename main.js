@@ -10,7 +10,7 @@ canvas.setAttribute('height', getComputedStyle(canvas).height)
 canvas.setAttribute('width', getComputedStyle(canvas).width)
 let gameActive = false
 
-
+// ----------------------  Main menu buttons -----------------------
 document.querySelector('.quit').addEventListener('click', () => {
     if(confirm('Close window?')) {
         close();
@@ -23,36 +23,54 @@ document.querySelector('.play').addEventListener('click', () => {
     spikesButton.classList.remove('hidden')
     mainGameLoop()
 })
+// ---------------------- Main menu buttons stop here -----------------
+
 spikesButton.addEventListener('click', () => {
     spikesButton.classList.add('selected')
 })
 
 // Add Event listener to canvas and do something if trap button is selected
 // then remove from selected
-canvas.addEventListener('click', function(event) {
-    let rect = canvas.getBoundingClientRect();
-    let x = event.clientX - rect.left;
-    let y = event.clientY - rect.top;
-    console.log("x: " + x + " y: " + y); 
+canvas.addEventListener('click', event => {
     if(spikesButton.classList.contains('selected')) {
-        return true
+        addTrap(event)
         spikesButton.classList.remove('selected')
     }
 })
-// const checkKeysPushed = () => {
-//     document.onkeydown = event => {
-//         if(event.key === "m") {
-//             if(!event.repeat) {
-//                 menu.render()
-//             }
-//         }
-//     }
-// }
+// Gets position of mouse click on the canvas and creates
+// a new trap x, y coords to that position
+const addTrap = event => {
+    let rect = canvas.getBoundingClientRect();
+    let x = event.clientX - rect.left;
+    let y = event.clientY - rect.top;
+    console.log("x: " + x + " y: " + y);
+    if(dungeonHeart.gold >= 100) {
+        let trap = new Trap(x, y)
+        traps.push(trap)
+        dungeonHeart.gold -= 100
+    } else {
+        console.log('not enought gold')
+    }
+}
 
 const updateMenuInfo = () => {
     menuHealthInfo.textContent = dungeonHeart.health
     menuGoldInfo.textContent = dungeonHeart.gold
     menuRoundInfo.textContent = dungeonHeart.round
+}
+
+class Trap {
+    constructor(x, y, width=75, height=75, color="green") {
+        this.x = x
+        this.y = y
+        this.width = width
+        this.height = height
+        this.color = color
+    }
+    render() {
+        context.fillStyle = this.color
+        context.fillRect(this.x, this.y, this.width, this.height)
+    }
 }
 
 class Wall {
@@ -78,7 +96,6 @@ class DungeonHeart {
         this.color = color
         this.gold = 500
         this.health = 10
-        this.alive = true
         this.round = 1
     }
     takeDamage(other) {
@@ -100,7 +117,6 @@ class DungeonHeart {
         if(this.health >= 1) {
             return true
         } else {
-            this.alive = false
             return false
         }
     }
@@ -117,7 +133,6 @@ class Enemy {
         this.alive = true
         this.speed = speed
         this.spawnPoint = spawnPoint
-        this.endpath = false
         if(spawnPoint === 1) {
             this.x = 1100
             this.y = 100
@@ -164,23 +179,28 @@ class Enemy {
                 this.x -= this.speed
             } else if(this.x >= 40 && this.y <= 500) {
                 this.y += this.speed
-                this.endpath = true
             } else if(this.x >= 40 && this.y >= 500) {
                 this.x += this.speed
             }
         }
     }
     checkCollision(other, enemyArr) {
+        let index = enemyArr.indexOf(this)
         const horizHit = this.x >= other.x && this.x + this.width < other.x + other.width
         const vertHit = this.y >= other.y && this.y + this.height < other.y + other.height
         if(horizHit && vertHit && this.alive) {
+            //if enemy is colliding with dungeon heart
             if (other instanceof DungeonHeart) {
-                let index  = enemyArr.indexOf(this)
                 enemyArr.splice(index, 1)
                 other.takeDamage(this)
                 dungeonHeart.gold += 5
+                this.takeDamage()
+            // if enemy is colliding with traps BROKEN ??
+            } else if(other instanceof Trap) {
+                enemyArr.splice(index, 1)
+                dungeonHeart.gold += 5
+                console.log('trap hit')
             }
-            this.takeDamage()
         }
     }
 }
@@ -225,12 +245,17 @@ const roundOne = new Round([
     new Enemy(1, 5),
 
 ])
+// when a trap is made it will be pushed into this arr
+const traps = []
 
 // control enemy movement collision and draw to screen
 const enemyControl = arr => {
     arr.forEach(enemy => {  
         enemy.render()
         enemy.checkCollision(dungeonHeart, arr)
+        traps.forEach(trap => {
+            enemy.checkCollision(trap, arr)
+        })
         enemy.move()
     })
 }
@@ -241,20 +266,22 @@ const mainGameLoop = () => {
         context.clearRect(0, 0, canvas.width, canvas.height)
         dungeonHeart.render()
         updateMenuInfo()
-        // checkKeysPushed()
         walls.forEach(wall => {
             wall.render();
+        })
+        traps.forEach(trap => {
+            trap.render()
         })
         if(dungeonHeart.round === 1) {
             dungeonHeart.checkAlive()
             enemyControl(roundOne.enemies)
-            if(roundOne.allEnemiesDead() && dungeonHeart.alive) {
+            if(roundOne.allEnemiesDead() && dungeonHeart.checkAlive()) {
                 dungeonHeart.round++
             }
         } else if(dungeonHeart.round === 2) {
             console.log(dungeonHeart.round)
         }
-        if(dungeonHeart.health === 0) {
+        if(!dungeonHeart.checkAlive()) {
             return
         }
     }, 25)
