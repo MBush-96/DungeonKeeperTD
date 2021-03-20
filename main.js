@@ -11,18 +11,20 @@ canvas.setAttribute('width', getComputedStyle(canvas).width)
 let gameActive = false
 
 
-// document.querySelector('.quit').addEventListener('click', () => {
-//     if(confirm('Close window?')) {
-//         close();
-//     }
-// })
-// document.querySelector('.play').addEventListener('click', () => {
-//     document.querySelector('.main_menu').classList.add('hidden')
-//     document.querySelector('canvas').classList.remove('hidden')
-//     mainGameLoop()
-// })
-document.querySelector('.gmbo').addEventListener('click', () => {
-    document.querySelector('.gmbo').classList.add('selected')
+document.querySelector('.quit').addEventListener('click', () => {
+    if(confirm('Close window?')) {
+        close();
+    }
+})
+document.querySelector('.play').addEventListener('click', () => {
+    document.querySelector('.main_menu').classList.add('hidden')
+    canvas.classList.remove('hidden')
+    document.querySelector('.game_menu').classList.remove('hidden')
+    spikesButton.classList.remove('hidden')
+    mainGameLoop()
+})
+spikesButton.addEventListener('click', () => {
+    spikesButton.classList.add('selected')
 })
 
 // Add Event listener to canvas and do something if trap button is selected
@@ -33,10 +35,10 @@ canvas.addEventListener('click', function(event) {
     let y = event.clientY - rect.top;
     console.log("x: " + x + " y: " + y); 
     if(spikesButton.classList.contains('selected')) {
-        console.log('true')
+        return true
         spikesButton.classList.remove('selected')
     }
-}, false);
+})
 // const checkKeysPushed = () => {
 //     document.onkeydown = event => {
 //         if(event.key === "m") {
@@ -218,14 +220,10 @@ const dungeonHeart = new DungeonHeart(480, 420, 150, 140)
 const roundOne = new Round([
     new Enemy(1, 3),
     new Enemy(1, 4),
-    new Enemy(1, 3),
-    new Enemy(1, 4),
+    new Enemy(2, 3),
+    new Enemy(2, 4),
     new Enemy(1, 5),
-    new Enemy(2, 2),
-    new Enemy(2, 4),
-    new Enemy(2, 6),
-    new Enemy(2, 2),
-    new Enemy(2, 4),
+
 ])
 
 // control enemy movement collision and draw to screen
@@ -261,5 +259,3 @@ const mainGameLoop = () => {
         }
     }, 25)
 }
-
-mainGameLoop()
