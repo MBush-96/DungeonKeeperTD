@@ -4,11 +4,10 @@ const menuHealthInfo = document.querySelector('.health')
 const menuGoldInfo = document.querySelector('.gold')
 const menuRoundInfo = document.querySelector('.round')
 const spikesButton = document.querySelector('.gmbo')
-const bgImage = new Image()
+const dungeonHeartImage = document.querySelector('#dungeonheart')
 
 canvas.setAttribute('height', getComputedStyle(canvas).height)
 canvas.setAttribute('width', getComputedStyle(canvas).width)
-bgImage.src = './assets/mainMenuBG.jpg'
 let gameActive = false
 
 
@@ -55,7 +54,7 @@ const updateMenuInfo = () => {
 }
 
 class Wall {
-    constructor(x=0, y=0, width=600, height=600, color='rgb(134, 0, 0)') {
+    constructor(x=0, y=0, width=600, height=600, color='#4B1E00') {
         this.x = x
         this.y = y
         this.width = width
@@ -93,7 +92,7 @@ class DungeonHeart {
     }
     render() {
         context.fillStyle = this.color
-        context.fillRect(this.x, this.y, this.width, this.height)
+        context.drawImage(dungeonHeartImage, this.x, this.y, 150, 150)
     }
     checkAlive() {
         if(this.health >= 1) {
@@ -213,7 +212,7 @@ const walls = [
     new Wall(655, 410, 20, 180), //bottom right wall
 ]
 
-const dungeonHeart = new DungeonHeart(400, 430, 150, 140)
+const dungeonHeart = new DungeonHeart(480, 420, 150, 140)
 
 //round one enemies
 const roundOne = new Round([
@@ -263,4 +262,4 @@ const mainGameLoop = () => {
     }, 25)
 }
 
-//mainGameLoop()
+mainGameLoop()

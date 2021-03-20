@@ -5,6 +5,8 @@ canvas {
     border: 2px solid black;
     width: 1200px;
     height: 600px;
+    background-image: url('./assets/floor.png');
+    background-repeat: no-repeat;
 }
 
 .container {
