@@ -90,6 +90,11 @@ const buildTimer = (roundEnemies, timer) => {
     }, timer)
 }
 
+// used for speeds, gets random float
+const getRandInt = (maxNum, minNum) => {
+    return Math.random() * (maxNum - minNum) + minNum
+}
+
 class Trap {
     constructor(x, y, width=64, height=64, color="green") {
         this.x = x
@@ -165,17 +170,17 @@ class DungeonHeart {
 }
 
 class Enemy {
-    constructor(spawnPoint, speed=5, health, enemyName, x=0, y=0, width=25, height=25, color='yellow') {
-        this.x = x
-        this.y = y
+    constructor(spawnPoint, health, width=25, height=25, color='yellow') {
+        this.x
+        this.y
         this.width = width
         this.height = height
         this.color = color
         this.health = health
         this.alive = true
-        this.speed = speed
+        this.speed
         this.spawnPoint = spawnPoint
-        this.enemyName = enemyName
+        this.enemyName
         if(spawnPoint === 1) {
             this.x = 1100
             this.y = 100
@@ -185,12 +190,16 @@ class Enemy {
         }
         if(this.health === 1) {
             this.enemyName = 'Adventurer'
+            this.speed = getRandInt(2.1, 1.4)
         } else if(this.health === 2) {
             this.enemyName = 'Knight'
+            this.speed = getRandInt(2.7, 1.8)
         } else if(this.health === 3) {
             this.enemyName = 'Warrior'
+            this.speed = getRandInt(3.5, 2.4)
         } else if(this.health === 4) {
             this.enemyName = 'Champion'
+            this.speed = getRandInt(4, 3)
         }
     }
     render() {
@@ -296,47 +305,47 @@ const dungeonHeart = new DungeonHeart(480, 420, 150, 140)
 
 //round one enemies
 const roundOne = new Round([
-    //(spawnpoint, speed, health)
-    new Enemy(1, 3, 1),
-    new Enemy(1, 2, 1),
-    new Enemy(2, 4, 2),
-    new Enemy(2, 3, 1),
-    new Enemy(1, 3.5, 2),
+    //(spawnpoint, health)
+    new Enemy(1, 1),
+    new Enemy(1, 1),
+    new Enemy(2, 2),
+    new Enemy(2, 1),
+    new Enemy(1, 2),
 ])
 
 const roundTwo = new Round([
-    new Enemy(1, 4, 2),
-    new Enemy(1, 3, 2),
-    new Enemy(2, 3, 1),
-    new Enemy(2, 4, 1),
-    new Enemy(1, 2, 2),
+    new Enemy(1, 2),
+    new Enemy(1, 2),
+    new Enemy(2, 1),
+    new Enemy(2, 1),
+    new Enemy(1, 2),
 
 ])
 
 const roundThree = new Round([
-    new Enemy(1, 4, 2),
-    new Enemy(1, 3, 2),
-    new Enemy(2, 4, 2),
-    new Enemy(2, 3, 2),
-    new Enemy(1, 5, 2),
+    new Enemy(1, 2),
+    new Enemy(1, 2),
+    new Enemy(2, 2),
+    new Enemy(2, 2),
+    new Enemy(1, 2),
 
 ])
 
 const roundFour = new Round([
-    new Enemy(1, 4, 3),
-    new Enemy(2, 5, 3),
-    new Enemy(2, 4, 3),
-    new Enemy(2, 3, 3),
-    new Enemy(1, 5, 3),
+    new Enemy(1, 3),
+    new Enemy(2, 3),
+    new Enemy(2, 3),
+    new Enemy(2, 3),
+    new Enemy(1, 3),
 
 ])
 
 const roundFive = new Round([
-    new Enemy(1, 4, 4),
-    new Enemy(2, 5, 4),
-    new Enemy(2, 4, 4),
-    new Enemy(2, 3, 3),
-    new Enemy(1, 5, 3),
+    new Enemy(1, 4),
+    new Enemy(2, 4),
+    new Enemy(2, 4),
+    new Enemy(2, 3),
+    new Enemy(1, 3),
 
 ])
 
