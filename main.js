@@ -100,10 +100,10 @@ class Trap {
         this.trigger = true
         setInterval(() => {
             this.trigger = false
-        }, 1500)
+        }, 500)
         setInterval(() => {
             this.trigger = true
-        }, 2000)
+        }, 1500)
     }
     render() {
         if(this.trigger) {
