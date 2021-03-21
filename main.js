@@ -5,6 +5,8 @@ const menuGoldInfo = document.querySelector('.gold')
 const menuRoundInfo = document.querySelector('.round')
 const spikesButton = document.querySelector('.gmbo')
 const dungeonHeartImage = document.querySelector('#dungeonheart')
+const spikesImage = document.querySelector('#spikes')
+const gameMenu = document.querySelector('.game_menu')
 
 canvas.setAttribute('height', getComputedStyle(canvas).height)
 canvas.setAttribute('width', getComputedStyle(canvas).width)
@@ -19,7 +21,7 @@ document.querySelector('.quit').addEventListener('click', () => {
 document.querySelector('.play').addEventListener('click', () => {
     document.querySelector('.main_menu').classList.add('hidden')
     canvas.classList.remove('hidden')
-    document.querySelector('.game_menu').classList.remove('hidden')
+    gameMenu.classList.remove('hidden')
     spikesButton.classList.remove('hidden')
     mainGameLoop()
 })
@@ -45,11 +47,11 @@ const addTrap = event => {
     let y = event.clientY - rect.top;
     console.log("x: " + x + " y: " + y);
     if(dungeonHeart.gold >= 100) {
-        let trap = new Trap(x, y)
+        let trap = new Trap(x - 32, y - 32)
         traps.push(trap)
         dungeonHeart.gold -= 100
     } else {
-        console.log('not enought gold')
+        console.log('not enough gold')
     }
 }
 
@@ -60,7 +62,7 @@ const updateMenuInfo = () => {
 }
 
 class Trap {
-    constructor(x, y, width=75, height=75, color="green") {
+    constructor(x, y, width=64, height=64, color="green") {
         this.x = x
         this.y = y
         this.width = width
@@ -69,7 +71,7 @@ class Trap {
     }
     render() {
         context.fillStyle = this.color
-        context.fillRect(this.x, this.y, this.width, this.height)
+        context.drawImage(spikesImage, this.x, this.y)
     }
 }
 
@@ -94,7 +96,7 @@ class DungeonHeart {
         this.width = width
         this.height = height
         this.color = color
-        this.gold = 500
+        this.gold = 200
         this.health = 10
         this.round = 1
     }
@@ -123,13 +125,13 @@ class DungeonHeart {
 }
 
 class Enemy {
-    constructor(spawnPoint, speed=5, x=0, y=0, width=50, height=50, color='yellow') {
+    constructor(spawnPoint, speed=5, health, x=0, y=0, width=25, height=25, color='yellow') {
         this.x = x
         this.y = y
         this.width = width
         this.height = height
         this.color = color
-        this.health = 1
+        this.health = health
         this.alive = true
         this.speed = speed
         this.spawnPoint = spawnPoint
@@ -144,12 +146,17 @@ class Enemy {
     render() {        
         context.fillStyle = this.color
         context.fillRect(this.x, this.y, this.width, this.height)
+        context.fillText('Adventurer', this.x - 10, this.y- 10)
+        context.fillStyle = 'black'
+        context.font = '25px Arial';
+        context.fillText(this.health, this.x + 2, this.y + 20)
     }
     takeDamage() {
         if(this.health > 0) {
             this.health -= 1
         } else {
             this.alive = false
+            dungeonHeart.gold += 5
         }
     }
     move() {
@@ -198,7 +205,7 @@ class Enemy {
             // if enemy is colliding with traps BROKEN ??
             } else if(other instanceof Trap) {
                 enemyArr.splice(index, 1)
-                dungeonHeart.gold += 5
+                dungeonHeart.gold += 25
                 console.log('trap hit')
             }
         }
@@ -238,11 +245,12 @@ const dungeonHeart = new DungeonHeart(480, 420, 150, 140)
 
 //round one enemies
 const roundOne = new Round([
-    new Enemy(1, 3),
-    new Enemy(1, 4),
-    new Enemy(2, 3),
-    new Enemy(2, 4),
-    new Enemy(1, 5),
+    //(spawnpoint, speed, health)
+    new Enemy(1, 3, 5),
+    new Enemy(1, 4, 5),
+    new Enemy(2, 3, 5),
+    new Enemy(2, 4, 5),
+    new Enemy(1, 5, 5),
 
 ])
 // when a trap is made it will be pushed into this arr
@@ -280,8 +288,14 @@ const mainGameLoop = () => {
             }
         } else if(dungeonHeart.round === 2) {
             console.log(dungeonHeart.round)
+        } else if(dungeonHeart.round === 5) {
+            canvas.classList.add('hidden')
+            return
         }
         if(!dungeonHeart.checkAlive()) {
+            canvas.classList.add('hidden')
+            gameMenu.classList.add('hidden')
+            spikesButton.classList.add('hidden')
             return
         }
     }, 25)
