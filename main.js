@@ -12,7 +12,13 @@ const gameMenu = document.querySelector('.game_menu')
 const buttonsMenu = document.querySelector('.buttons')
 const gmboPrice = document.querySelector('.gmboprice')
 const gameOverScreen = document.querySelector('.gameover')
+const audio = new Audio('./audio/Challenger.mp3')
 let gamePaused = false
+
+// audio
+audio.volume = .3
+audio.loop = true
+audio.play()
 
 canvas.setAttribute('height', getComputedStyle(canvas).height)
 canvas.setAttribute('width', getComputedStyle(canvas).width)

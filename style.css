@@ -111,6 +111,10 @@ canvas {
     right: 100px
 }
 
+.buttonsfocus:focus {
+    outline: none;
+}
+
 .play:hover {
     cursor: pointer;
     background-color: white;
