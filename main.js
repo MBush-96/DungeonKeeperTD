@@ -17,11 +17,6 @@ const noGoldAudio = new Audio('./audio/Not_enough_gold.mp3')
 const victoryScreen = document.querySelector('.victory')
 let gamePaused = false
 
-// audio
-// audio.volume = .05
-// audio.loop = true
-// audio.play()
-
 canvas.setAttribute('height', getComputedStyle(canvas).height)
 canvas.setAttribute('width', getComputedStyle(canvas).width)
 let gameActive = false
@@ -39,8 +34,10 @@ document.querySelector('.play').addEventListener('click', () => {
     spikesButton.classList.remove('hidden')
     gmboPrice.classList.remove('hidden')
     buttonsMenu.classList.remove('hidden')
-    dungeonHeart.health = 10
-    dungeonHeart.round = 1
+    // audio
+    audio.volume = .05
+    audio.loop = true
+    audio.play()
     mainGameLoop()
 })
 // ---------------------- Main menu buttons stop here -----------------
@@ -100,12 +97,12 @@ class Trap {
         this.width = width
         this.height = height
         this.color = color
-        this.trigger = false
-        setInterval(() => {
-            this.trigger = true
-        }, 1500)
+        this.trigger = true
         setInterval(() => {
             this.trigger = false
+        }, 1500)
+        setInterval(() => {
+            this.trigger = true
         }, 2000)
     }
     render() {
@@ -193,7 +190,7 @@ class Enemy {
         } else if(this.health === 3) {
             this.enemyName = 'Warrior'
         } else if(this.health === 4) {
-            this.enemyName === 'Champion'
+            this.enemyName = 'Champion'
         }
     }
     render() {
@@ -257,6 +254,7 @@ class Enemy {
                 enemyArr.splice(index, 1)
                 other.takeDamage(this)
                 this.takeDamage(enemyArr)
+                dungeonHeart.gold += 25
             // if enemy is colliding with traps BROKEN ??
             } else if(other instanceof Trap && other.trigger) {
                 this.takeDamage(enemyArr)
