@@ -52,24 +52,24 @@ canvas {
     background-image: url('./assets/mainMenuBG.jpg');
 }
 
-.gameover {
+.endscreen {
     color: white;
     width: 1200px;
     height: 600px;
     font-family: 'Metal Mania';
 }
 
-.gameover h1 {
+.endscreen h1 {
     font-size: 80px;
     margin-top: 0px;
     margin-bottom: 0%;
 }
 
-.gameover p {
+.endscreen p {
     font-size: 40px;
 }
 
-.gameoverokbutton {
+.endscreenokbutton {
     width: 200px;
     height: 75px;
     background-color: black;

@@ -13,12 +13,14 @@ const buttonsMenu = document.querySelector('.buttons')
 const gmboPrice = document.querySelector('.gmboprice')
 const gameOverScreen = document.querySelector('.gameover')
 const audio = new Audio('./audio/Challenger.mp3')
+const noGoldAudio = new Audio('./audio/Not_enough_gold.mp3')
+const victoryScreen = document.querySelector('.victory')
 let gamePaused = false
 
 // audio
-audio.volume = .3
-audio.loop = true
-audio.play()
+// audio.volume = .05
+// audio.loop = true
+// audio.play()
 
 canvas.setAttribute('height', getComputedStyle(canvas).height)
 canvas.setAttribute('width', getComputedStyle(canvas).width)
@@ -61,12 +63,13 @@ const addTrap = event => {
     let x = event.clientX - rect.left;
     let y = event.clientY - rect.top;
     console.log("x: " + x + " y: " + y);
-    if(dungeonHeart.gold >= 100) {
+    if(dungeonHeart.gold >= 125) {
         let trap = new Trap(x - 32, y - 32)
         traps.push(trap)
-        dungeonHeart.gold -= 100
+        dungeonHeart.gold -= 125
     } else {
         console.log('not enough gold')
+        noGoldAudio.play()
     }
 }
 
@@ -84,6 +87,12 @@ const hideGame = () => {
     buttonsMenu.classList.add('hidden')
 }
 
+const buildTimer = (roundEnemies, timer) => {
+    setTimeout(() => {
+        enemyControl(roundEnemies.enemies)
+    }, timer)
+}
+
 class Trap {
     constructor(x, y, width=64, height=64, color="green") {
         this.x = x
@@ -94,10 +103,10 @@ class Trap {
         this.trigger = false
         setInterval(() => {
             this.trigger = true
-        }, 1000)
+        }, 1500)
         setInterval(() => {
             this.trigger = false
-        }, 1500)
+        }, 2000)
     }
     render() {
         if(this.trigger) {
@@ -132,6 +141,7 @@ class DungeonHeart {
         this.gold = 200
         this.health = 10
         this.round = 1
+        this.roundOver = false
     }
     takeDamage(other) {
         if(this.health >= 1) {
@@ -158,7 +168,7 @@ class DungeonHeart {
 }
 
 class Enemy {
-    constructor(spawnPoint, speed=5, health, x=0, y=0, width=25, height=25, color='yellow') {
+    constructor(spawnPoint, speed=5, health, enemyName, x=0, y=0, width=25, height=25, color='yellow') {
         this.x = x
         this.y = y
         this.width = width
@@ -168,6 +178,7 @@ class Enemy {
         this.alive = true
         this.speed = speed
         this.spawnPoint = spawnPoint
+        this.enemyName = enemyName
         if(spawnPoint === 1) {
             this.x = 1100
             this.y = 100
@@ -175,18 +186,25 @@ class Enemy {
             this.x = 1100
             this.y = 500
         }
+        if(this.health === 1) {
+            this.enemyName = 'Adventurer'
+        } else if(this.health === 2) {
+            this.enemyName = 'Knight'
+        } else if(this.health === 3) {
+            this.enemyName = 'Champion'
+        }
     }
     render() {
         context.fillStyle = this.color
         context.fillRect(this.x, this.y, this.width, this.height)
-        context.fillText('Adventurer', this.x - 10, this.y- 10)
+        context.fillText(this.enemyName, this.x - 10, this.y- 10)
         context.fillStyle = 'black'
         context.font = '25px Arial';
         context.fillText(this.health, this.x + 2, this.y + 20)
     }
     takeDamage(enemyArr) {
         let index = enemyArr.indexOf(this)
-        if(this.health > 0) {
+        if(this.health >= 1) {
             this.health -= 1
             console.log(this.health)
         } else {
@@ -279,13 +297,40 @@ const dungeonHeart = new DungeonHeart(480, 420, 150, 140)
 //round one enemies
 const roundOne = new Round([
     //(spawnpoint, speed, health)
-    new Enemy(1, 3, 5),
-    new Enemy(1, 4, 5),
-    new Enemy(2, 3, 5),
-    new Enemy(2, 4, 5),
-    new Enemy(1, 5, 5),
+    new Enemy(1, 3, 1),
+    new Enemy(1, 2, 1),
+    new Enemy(2, 4, 2),
+    new Enemy(2, 3, 1),
+    new Enemy(1, 3.5, 2),
+])
+
+const roundTwo = new Round([
+    new Enemy(1, 4, 2),
+    new Enemy(1, 3, 2),
+    new Enemy(2, 3, 1),
+    new Enemy(2, 4, 1),
+    new Enemy(1, 2, 2),
 
 ])
+
+const roundThree = new Round([
+    new Enemy(1, 4, 2),
+    new Enemy(1, 3, 2),
+    new Enemy(2, 4, 2),
+    new Enemy(2, 3, 2),
+    new Enemy(1, 5, 2),
+
+])
+
+const roundFour = new Round([
+    new Enemy(1, 4, 3),
+    new Enemy(2, 5, 3),
+    new Enemy(2, 4, 3),
+    new Enemy(2, 3, 3),
+    new Enemy(1, 5, 3),
+
+])
+
 // when a trap is made it will be pushed into this arr
 const traps = []
 
@@ -303,27 +348,44 @@ const enemyControl = arr => {
 const mainGameLoop = () => {
     const intervalId = setInterval(() => {
         context.clearRect(0, 0, canvas.width, canvas.height)
-        traps.forEach(trap =>trap.render())
+        traps.forEach(trap => trap.render())
         walls.forEach(wall => wall.render())
         dungeonHeart.render()
         updateMenuInfo()
         if(dungeonHeart.round === 1) {
-            dungeonHeart.checkAlive()
             enemyControl(roundOne.enemies)
             if(roundOne.allEnemiesDead() && dungeonHeart.checkAlive()) {
                 dungeonHeart.round++
             }
         } else if(dungeonHeart.round === 2) {
-            console.log(dungeonHeart.round)
+            buildTimer(roundTwo, 5000)
+            if(roundTwo.allEnemiesDead() && dungeonHeart.checkAlive()) {
+                dungeonHeart.round++
+            }
+        } else if(dungeonHeart.round === 3) {
+            buildTimer(roundThree, 5000)
+            if(roundThree.allEnemiesDead() && dungeonHeart.checkAlive()) {
+                dungeonHeart.round++
+            }
+        } else if(dungeonHeart.round === 4) {
+            buildTimer(roundFour, 5000)
+            if(roundFour.allEnemiesDead() && dungeonHeart.checkAlive()) {
+                dungeonHeart.round++
+            }
         } else if(dungeonHeart.round === 5) {
             hideGame()
+            victoryScreen.classList.remove('hidden')
+            document.querySelector('.dungeonheart_power').textContent = dungeonHeart.health
+            document.querySelector('.victorybtn').addEventListener('click', () => {
+                location.reload()
+            })
             return
         }
-
         if(!dungeonHeart.checkAlive()) {
             hideGame()
             gameOverScreen.classList.remove('hidden')
-            document.querySelector('.gameoverokbutton').addEventListener('click', () => {
+            document.querySelector('.roundachieved').textContent = dungeonHeart.round
+            document.querySelector('.gameoverbtn').addEventListener('click', () => {
                 location.reload()
             })
         }
