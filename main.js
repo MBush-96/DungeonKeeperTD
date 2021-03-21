@@ -191,7 +191,9 @@ class Enemy {
         } else if(this.health === 2) {
             this.enemyName = 'Knight'
         } else if(this.health === 3) {
-            this.enemyName = 'Champion'
+            this.enemyName = 'Warrior'
+        } else if(this.health === 4) {
+            this.enemyName === 'Champion'
         }
     }
     render() {
@@ -331,6 +333,15 @@ const roundFour = new Round([
 
 ])
 
+const roundFive = new Round([
+    new Enemy(1, 4, 4),
+    new Enemy(2, 5, 4),
+    new Enemy(2, 4, 4),
+    new Enemy(2, 3, 3),
+    new Enemy(1, 5, 3),
+
+])
+
 // when a trap is made it will be pushed into this arr
 const traps = []
 
@@ -373,6 +384,11 @@ const mainGameLoop = () => {
                 dungeonHeart.round++
             }
         } else if(dungeonHeart.round === 5) {
+            buildTimer(roundFive, 5000)
+            if(roundFive.allEnemiesDead() && dungeonHeart.checkAlive()) {
+                dungeonHeart.round++
+            }
+        } else if(dungeonHeart.round === 6) {
             hideGame()
             victoryScreen.classList.remove('hidden')
             document.querySelector('.dungeonheart_power').textContent = dungeonHeart.health
