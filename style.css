@@ -25,7 +25,20 @@ canvas {
 .buttons {
     background-color: black;
     padding-top: 50px;
-    padding-bottom: 50px;
+    padding-bottom: 0px;
+}
+
+.gmbo {
+    background-image: url('./assets/spikes.png');
+    color: white;
+    margin: 5px;
+    width: 68px;
+    height: 50px;
+}
+
+.gmboprice {
+    color: white;
+    margin-top: 0px;
 }
 
 .game_menu p {
@@ -37,6 +50,39 @@ canvas {
     width: 1200px;
     height: 600px;
     background-image: url('./assets/mainMenuBG.jpg');
+}
+
+.gameover {
+    color: white;
+    width: 1200px;
+    height: 600px;
+    font-family: 'Metal Mania';
+}
+
+.gameover h1 {
+    font-size: 80px;
+    margin-top: 0px;
+    margin-bottom: 0%;
+}
+
+.gameover p {
+    font-size: 40px;
+}
+
+.gameoverokbutton {
+    width: 200px;
+    height: 75px;
+    background-color: black;
+    border-radius: 30%;
+    font-family: 'Metal Mania';
+    font-size: 30px;
+    color: white;
+}
+
+.gameoverokbutton:hover {
+    background-color: white;
+    color: black;
+    cursor: pointer;
 }
 
 .hidden {

@@ -4,9 +4,15 @@ const menuHealthInfo = document.querySelector('.health')
 const menuGoldInfo = document.querySelector('.gold')
 const menuRoundInfo = document.querySelector('.round')
 const spikesButton = document.querySelector('.gmbo')
+const mainMenu = document.querySelector('.main_menu')
 const dungeonHeartImage = document.querySelector('#dungeonheart')
-const spikesImage = document.querySelector('#spikes')
+const spikesTriggeredImage = document.querySelector('#spikes')
+const spikesNotTriggeredImage = document.querySelector('#spikesoff')
 const gameMenu = document.querySelector('.game_menu')
+const buttonsMenu = document.querySelector('.buttons')
+const gmboPrice = document.querySelector('.gmboprice')
+const gameOverScreen = document.querySelector('.gameover')
+let gamePaused = false
 
 canvas.setAttribute('height', getComputedStyle(canvas).height)
 canvas.setAttribute('width', getComputedStyle(canvas).width)
@@ -23,6 +29,10 @@ document.querySelector('.play').addEventListener('click', () => {
     canvas.classList.remove('hidden')
     gameMenu.classList.remove('hidden')
     spikesButton.classList.remove('hidden')
+    gmboPrice.classList.remove('hidden')
+    buttonsMenu.classList.remove('hidden')
+    dungeonHeart.health = 10
+    dungeonHeart.round = 1
     mainGameLoop()
 })
 // ---------------------- Main menu buttons stop here -----------------
@@ -30,7 +40,6 @@ document.querySelector('.play').addEventListener('click', () => {
 spikesButton.addEventListener('click', () => {
     spikesButton.classList.add('selected')
 })
-
 // Add Event listener to canvas and do something if trap button is selected
 // then remove from selected
 canvas.addEventListener('click', event => {
@@ -61,6 +70,14 @@ const updateMenuInfo = () => {
     menuRoundInfo.textContent = dungeonHeart.round
 }
 
+const hideGame = () => {
+    canvas.classList.add('hidden')
+    gameMenu.classList.add('hidden')
+    spikesButton.classList.add('hidden')
+    gmboPrice.classList.add('hidden')
+    buttonsMenu.classList.add('hidden')
+}
+
 class Trap {
     constructor(x, y, width=64, height=64, color="green") {
         this.x = x
@@ -68,10 +85,20 @@ class Trap {
         this.width = width
         this.height = height
         this.color = color
+        this.trigger = false
+        setInterval(() => {
+            this.trigger = true
+        }, 1000)
+        setInterval(() => {
+            this.trigger = false
+        }, 1500)
     }
     render() {
-        context.fillStyle = this.color
-        context.drawImage(spikesImage, this.x, this.y)
+        if(this.trigger) {
+            context.drawImage(spikesTriggeredImage, this.x, this.y)
+        } else if(!this.trigger) {
+            context.drawImage(spikesNotTriggeredImage, this.x, this.y)
+        }
     }
 }
 
@@ -143,7 +170,7 @@ class Enemy {
             this.y = 500
         }
     }
-    render() {        
+    render() {
         context.fillStyle = this.color
         context.fillRect(this.x, this.y, this.width, this.height)
         context.fillText('Adventurer', this.x - 10, this.y- 10)
@@ -151,12 +178,15 @@ class Enemy {
         context.font = '25px Arial';
         context.fillText(this.health, this.x + 2, this.y + 20)
     }
-    takeDamage() {
+    takeDamage(enemyArr) {
+        let index = enemyArr.indexOf(this)
         if(this.health > 0) {
             this.health -= 1
+            console.log(this.health)
         } else {
             this.alive = false
-            dungeonHeart.gold += 5
+            enemyArr.splice(index, 1)
+            dungeonHeart.gold += 25
         }
     }
     move() {
@@ -200,13 +230,10 @@ class Enemy {
             if (other instanceof DungeonHeart) {
                 enemyArr.splice(index, 1)
                 other.takeDamage(this)
-                dungeonHeart.gold += 5
-                this.takeDamage()
+                this.takeDamage(enemyArr)
             // if enemy is colliding with traps BROKEN ??
-            } else if(other instanceof Trap) {
-                enemyArr.splice(index, 1)
-                dungeonHeart.gold += 25
-                console.log('trap hit')
+            } else if(other instanceof Trap && other.trigger) {
+                this.takeDamage(enemyArr)
             }
         }
     }
@@ -261,25 +288,19 @@ const enemyControl = arr => {
     arr.forEach(enemy => {  
         enemy.render()
         enemy.checkCollision(dungeonHeart, arr)
-        traps.forEach(trap => {
-            enemy.checkCollision(trap, arr)
-        })
+        traps.forEach(trap => enemy.checkCollision(trap, arr))
         enemy.move()
     })
 }
 
 //main game
 const mainGameLoop = () => {
-    setInterval(() => {
+    const intervalId = setInterval(() => {
         context.clearRect(0, 0, canvas.width, canvas.height)
+        traps.forEach(trap =>trap.render())
+        walls.forEach(wall => wall.render())
         dungeonHeart.render()
         updateMenuInfo()
-        walls.forEach(wall => {
-            wall.render();
-        })
-        traps.forEach(trap => {
-            trap.render()
-        })
         if(dungeonHeart.round === 1) {
             dungeonHeart.checkAlive()
             enemyControl(roundOne.enemies)
@@ -289,14 +310,24 @@ const mainGameLoop = () => {
         } else if(dungeonHeart.round === 2) {
             console.log(dungeonHeart.round)
         } else if(dungeonHeart.round === 5) {
-            canvas.classList.add('hidden')
+            hideGame()
             return
         }
+
         if(!dungeonHeart.checkAlive()) {
-            canvas.classList.add('hidden')
-            gameMenu.classList.add('hidden')
-            spikesButton.classList.add('hidden')
-            return
+            hideGame()
+            gameOverScreen.classList.remove('hidden')
+            document.querySelector('.gameoverokbutton').addEventListener('click', () => {
+                location.reload()
+            })
         }
     }, 25)
+
+    // document.addEventListener('keydown', event => {
+    //     if(event.key === "p" && !gamePaused) {
+    //         clearInterval(intervalId)
+    //     } else if(event.key === "p" && gamePaused) {
+
+    //     }
+    // })
 }
