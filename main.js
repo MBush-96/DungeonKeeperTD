@@ -108,7 +108,7 @@ const buildTimer = (roundEnemies, timer) => {
 
 const makeNewBullet = (trap) => {
     const projectile = new Projectile(trap.x + 40, trap.y + 19)
-    bulletRack.push(projectile)
+    trap.bulletRack.push(projectile)
 }
 // used for speeds, gets random float
 const getRandFloat = (minNum, maxNum) => {
@@ -140,6 +140,7 @@ class Trap {
         this.trigger = true
         this.trapType = trapType
         this.turretAttackSpeed = 1000
+        this.bulletRack = []
         setInterval(() => {
             this.trigger = false
         }, 500)
@@ -156,18 +157,16 @@ class Trap {
             context.drawImage(turretImage, this.x, this.y)
         }
     }
-    shoot (bulletRack) {
-        //setInterval(() => {
+    shoot () {
         makeNewBullet(this)
-        //}, 10)
-        let bullet = bulletRack[0]
+        let bullet = this.bulletRack[0];
         if(bullet !== undefined) {
             bullet.move()
             bullet.render()
         }
         if(bullet !== undefined) {
             if(bullet.x > 1100) {
-                bulletRack.splice(bullet, 1)
+                this.bulletRack.splice(bullet, 1)
             }
         }
     }
@@ -194,7 +193,7 @@ class DungeonHeart {
         this.width = width
         this.height = height
         this.color = color
-        this.gold = 500
+        this.gold = 2500
         this.health = 10
         this.round = 1
         this.roundOver = false
@@ -333,7 +332,7 @@ class Enemy {
     }
     checkCollision(other, enemyArr) {
         let index = enemyArr.indexOf(this)
-        const xHit = other.x >= this.x && other.y + other.height > this.y
+        const xHit = other.x <= this.x && other.x >= other.x + other.width && other.y >= this.y && other.y <= this.y + this.height
         const horizHit = this.x >= other.x && this.x + this.width < other.x + other.width
         const vertHit = this.y >= other.y && this.y + this.height < other.y + other.height
         if(horizHit && vertHit && this.alive) {
@@ -434,7 +433,6 @@ const roundSix = new Round([
     new Enemy(2, 10),
 ])
 
-const bulletRack = []
 // when a trap is made it will be pushed into this arr
 const traps = []
 // control enemy movement collision and draw to screen
@@ -442,8 +440,10 @@ const enemyControl = arr => {
     arr.forEach(enemy => {  
         enemy.move(arr)
         enemy.checkCollision(dungeonHeart, arr)
-        traps.forEach(trap => enemy.checkCollision(trap, arr))
-        bulletRack.forEach(bullet => enemy.checkCollision(bullet, arr))
+        traps.forEach(trap => {
+            enemy.checkCollision(trap, arr)
+            trap.bulletRack.forEach(bullet => enemy.checkCollision(bullet, arr))
+        })
         enemy.checkDead(arr)
     })
 }
@@ -455,7 +455,7 @@ const mainGameLoop = () => {
         traps.forEach(trap => {
             trap.render()
             if(trap.trapType === 'turret') {
-                trap.shoot(bulletRack)
+                trap.shoot()
             } 
         })
         walls.forEach(wall => wall.render())
