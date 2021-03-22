@@ -9,6 +9,7 @@ const mainMenu = document.querySelector('.main_menu')
 const dungeonHeartImage = document.querySelector('#dungeonheart')
 const spikesTriggeredImage = document.querySelector('#spikes')
 const spikesNotTriggeredImage = document.querySelector('#spikesoff')
+const turretImage = document.querySelector('#turret')
 const gameMenu = document.querySelector('.game_menu')
 const buttonsMenu = document.querySelector('.buttons')
 const gmbPrice = document.querySelectorAll('.gmbprice')
@@ -70,10 +71,10 @@ const addTrap = (event, trapType) => {
     let x = event.clientX - rect.left;
     let y = event.clientY - rect.top;
     console.log("x: " + x + " y: " + y);
-    if(dungeonHeart.gold >= 125 && trapType === 'spike') {
+    if(dungeonHeart.gold >= 100 && trapType === 'spike') {
         let trap = new Trap(x - 32, y - 32, trapType)
         traps.push(trap)
-        dungeonHeart.gold -= 125
+        dungeonHeart.gold -= 100
     } else if(dungeonHeart.gold >= 200 && trapType === 'turret') {
         let trap = new Trap(x - 32, y - 32, trapType)
         traps.push(trap)
@@ -105,6 +106,10 @@ const buildTimer = (roundEnemies, timer) => {
     }, timer)
 }
 
+const makeNewBullet = () => {
+    const projectile = new Projectile(500, 300)
+    bulletRack.push(projectile)
+}
 // used for speeds, gets random float
 const getRandFloat = (minNum, maxNum) => {
     return Math.random() * (maxNum - minNum) + minNum
@@ -116,7 +121,7 @@ class Projectile {
         this.y = y
         this.width = width
         this.height = height
-        this.speed = 2
+        this.speed = 5
     }
     render() {
         context.fillRect(this.x, this.y, this.width, this.height)
@@ -137,7 +142,7 @@ class Trap {
         this.color = color
         this.trigger = true
         this.trapType = trapType
-        this.projectile = []
+        this.turretAttackSpeed = 1000
         setInterval(() => {
             this.trigger = false
         }, 500)
@@ -151,13 +156,23 @@ class Trap {
         } else if(!this.trigger && this.trapType === 'spike') {
             context.drawImage(spikesNotTriggeredImage, this.x, this.y)
         } else if(this.trapType ===  'turret') {
-            context.fillStyle = this.color
-            context.fillRect(this.x, this.y, this.width, this.height)
+            context.drawImage(turretImage, this.x, this.y)
         }
     }
-    shoot (projectile) {
-        projectile.render()
-        projectile.move()
+    shoot (bulletRack) {
+        //setInterval(() => {
+        makeNewBullet()
+        //}, 10)
+        let bullet = bulletRack[0]
+        if(bullet !== undefined) {
+            bullet.move()
+            bullet.render()
+        }
+        if(bullet !== undefined) {
+            if(bullet.x > 1100) {
+                bulletRack.splice(bullet, 1)
+            }
+        }
     }
 }
 
@@ -182,7 +197,7 @@ class DungeonHeart {
         this.width = width
         this.height = height
         this.color = color
-        this.gold = 200
+        this.gold = 500
         this.health = 10
         this.round = 1
         this.roundOver = false
@@ -338,6 +353,7 @@ class Enemy {
     }
 }
 
+
 //round class use for making new round enemies and checking if all 
 //enemies in round are dead
 class Round {
@@ -366,7 +382,7 @@ const walls = [
     new Wall(100, 410, 575, 5), // bottom left wall
     new Wall(655, 410, 20, 180), //bottom right wall
 ]
-const projectile = new Projectile(500, 300)
+
 const dungeonHeart = new DungeonHeart(480, 420, 150, 140)
 //round one enemies
 
@@ -420,6 +436,7 @@ const roundSix = new Round([
     new Enemy(2, 10),
 ])
 
+const bulletRack = []
 // when a trap is made it will be pushed into this arr
 const traps = []
 // control enemy movement collision and draw to screen
@@ -439,7 +456,7 @@ const mainGameLoop = () => {
         traps.forEach(trap => {
             trap.render()
             if(trap.trapType === 'turret') {
-                trap.shoot(projectile)
+                trap.shoot(bulletRack)
             } 
         })
         walls.forEach(wall => wall.render())

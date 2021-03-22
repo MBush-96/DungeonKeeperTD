@@ -29,7 +29,7 @@ canvas {
 }
 
 .gmbuttons {
-    background-color: green;
+    background-color: black;
     color: white;
     margin: 5px;
     width: 68px;
@@ -38,6 +38,10 @@ canvas {
 
 .gmbo {
     background-image: url('./assets/spikes.png');;
+}
+
+.gmbt {
+    background-image: url('./assets/turret.png');
 }
 
 .gmbprice {
