@@ -106,8 +106,8 @@ const buildTimer = (roundEnemies, timer) => {
     }, timer)
 }
 
-const makeNewBullet = () => {
-    const projectile = new Projectile(500, 300)
+const makeNewBullet = (trap) => {
+    const projectile = new Projectile(trap.x + 40, trap.y + 19)
     bulletRack.push(projectile)
 }
 // used for speeds, gets random float
@@ -128,9 +128,6 @@ class Projectile {
     }
     move() {
         this.x += this.speed
-    }
-    getNewProjectile() {
-        return new Projectile(this.x, this.y)
     }
  }
 class Trap {
@@ -161,7 +158,7 @@ class Trap {
     }
     shoot (bulletRack) {
         //setInterval(() => {
-        makeNewBullet()
+        makeNewBullet(this)
         //}, 10)
         let bullet = bulletRack[0]
         if(bullet !== undefined) {
@@ -386,10 +383,6 @@ const walls = [
 const dungeonHeart = new DungeonHeart(480, 420, 150, 140)
 //round one enemies
 
-const roundTest = new Round([
-    new Enemy(2, 1),
-    new Enemy(2, 4)
-])
 const roundOne = new Round([
     //(spawnpoint, health)
     new Enemy(3, 1),
