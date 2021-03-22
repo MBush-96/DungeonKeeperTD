@@ -333,6 +333,7 @@ class Enemy {
     }
     checkCollision(other, enemyArr) {
         let index = enemyArr.indexOf(this)
+        const xHit = other.x >= this.x && other.y + other.height > this.y
         const horizHit = this.x >= other.x && this.x + this.width < other.x + other.width
         const vertHit = this.y >= other.y && this.y + this.height < other.y + other.height
         if(horizHit && vertHit && this.alive) {
@@ -347,9 +348,13 @@ class Enemy {
                 this.takeDamage(enemyArr)
             }
         }
+        if(xHit) {
+            if(other instanceof Projectile) {
+                this.takeDamage(enemyArr)
+            }
+        }
     }
 }
-
 
 //round class use for making new round enemies and checking if all 
 //enemies in round are dead
@@ -438,6 +443,7 @@ const enemyControl = arr => {
         enemy.move(arr)
         enemy.checkCollision(dungeonHeart, arr)
         traps.forEach(trap => enemy.checkCollision(trap, arr))
+        bulletRack.forEach(bullet => enemy.checkCollision(bullet, arr))
         enemy.checkDead(arr)
     })
 }
