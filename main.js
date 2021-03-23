@@ -193,7 +193,7 @@ class DungeonHeart {
         this.width = width
         this.height = height
         this.color = color
-        this.gold = 2500
+        this.gold = 450
         this.health = 10
         this.round = 1
         this.roundOver = false
@@ -282,7 +282,7 @@ class Enemy {
         enemyArr.forEach(enemy => {
             if(enemy.health === 0) {
                 enemyArr.splice(index, 1)
-                dungeonHeart.gold += 25
+                dungeonHeart.gold += 35
             }
         })
     }
@@ -341,7 +341,7 @@ class Enemy {
                 enemyArr.splice(index, 1)
                 other.takeDamage(this)
                 this.takeDamage(enemyArr)
-                dungeonHeart.gold += 25
+                dungeonHeart.gold += 35
             // if enemy is colliding with traps
             } else if(other instanceof Trap && other.trigger && other.trapType === 'spike') {
                 this.takeDamage(enemyArr)
