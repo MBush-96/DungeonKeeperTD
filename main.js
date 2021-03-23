@@ -201,8 +201,8 @@ class DungeonHeart {
         this.height = height
         this.color = color
         this.gold = 450
-        this.health = 10
-        this.round = 5
+        this.health = 15
+        this.round = 1
         this.roundOver = false
     }
     takeDamage(other) {
@@ -258,7 +258,7 @@ class Enemy {
         } else if(this.health === 4) {
             this.enemyName = 'Champion'
             this.speed = getRandFloat(2, 2.6)
-        } else if(this.health === 10) {
+        } else if(this.health === 6) {
             this.enemyName = 'Royalty'
             this.speed = getRandFloat(3, 3.4)
         }
@@ -281,7 +281,7 @@ class Enemy {
         } else {
             setTimeout(() => {
                 this.recentlyDamaged = false
-                }, 500)
+                }, 200)
             }
         }
     checkDead(enemyArr) {
@@ -436,16 +436,15 @@ const roundFive = new Round([
 ])
 
 const roundSix = new Round([
-    new Enemy(1, 10),
-    new Enemy(2, 10),
+    new Enemy(1, 6),
+    new Enemy(2, 6),
 ])
 
 const roundSeven = new Round([
-    new Enemy(1, 10),
-    new Enemy(2, 10),
-    new Enemy(1, 10),
-    new Enemy(2, 10),
-    new Enemy(1, 10),
+    new Enemy(1, 6),
+    new Enemy(2, 6),
+    new Enemy(1, 3),
+    new Enemy(2, 2),
     new Enemy(2, 4)
 ])
 // when a trap is made it will be pushed into this arr
@@ -467,13 +466,13 @@ const enemyControl = arr => {
 const mainGameLoop = () => {
     const intervalId = setInterval(() => {
         context.clearRect(0, 0, canvas.width, canvas.height)
+        walls.forEach(wall => wall.render())
         traps.forEach(trap => {
             trap.render()
             if(trap.trapType === 'turret') {
                 trap.shoot()
             } 
         })
-        walls.forEach(wall => wall.render())
         dungeonHeart.render()
         updateMenuInfo()
         if(dungeonHeart.round === 1) {
