@@ -48,9 +48,15 @@ document.querySelector('.play').addEventListener('click', () => {
 // ---------------------- Traps Buttons -----------------------------
 spikesButton.addEventListener('click', () => {
     spikesButton.classList.add('selected')
+    if(turretButton.classList.contains('selected')) {
+        turretButton.classList.remove('selected')
+    }
 })
 turretButton.addEventListener('click', () => {
     turretButton.classList.add('selected')
+    if(spikesButton.classList.contains('selected')) {
+        spikesButton.classList.remove('selected')
+    }
 })
 // Add Event listener to canvas and do something if trap button is selected
 // then remove from selected
@@ -106,7 +112,7 @@ const buildTimer = (roundEnemies, timer) => {
     }, timer)
 }
 
-const makeNewBullet = (trap) => {
+const makeNewBullet = trap => {
     const projectile = new Projectile(trap.x + 40, trap.y + 19)
     trap.bulletRack.push(projectile)
 }
@@ -158,7 +164,6 @@ class Trap {
         }
     }
     shoot () {
-        makeNewBullet(this)
         let bullet = this.bulletRack[0];
         if(bullet !== undefined) {
             bullet.move()
@@ -168,6 +173,8 @@ class Trap {
             if(bullet.x > 1100) {
                 this.bulletRack.splice(bullet, 1)
             }
+        } else {
+            makeNewBullet(this)
         }
     }
 }
@@ -195,7 +202,7 @@ class DungeonHeart {
         this.color = color
         this.gold = 450
         this.health = 10
-        this.round = 1
+        this.round = 5
         this.roundOver = false
     }
     takeDamage(other) {
@@ -217,7 +224,7 @@ class DungeonHeart {
 }
 
 class Enemy {
-    constructor(spawnPoint, health, width=25, height=25, color='yellow') {
+    constructor(spawnPoint, health, width=30, height=25, color='yellow') {
         this.x
         this.y
         this.width = width
@@ -342,11 +349,14 @@ class Enemy {
                 other.takeDamage(this)
                 this.takeDamage(enemyArr)
                 dungeonHeart.gold += 35
+            }
             // if enemy is colliding with traps
-            } else if(other instanceof Trap && other.trigger && other.trapType === 'spike') {
+            if(other.trapType === 'spike' && other.trigger && other instanceof Trap) {
                 this.takeDamage(enemyArr)
-            } else if(other instanceof Projectile) {
+            }
+            if(other instanceof Projectile && this.alive) {
                     this.takeDamage(enemyArr)
+                    console.log('hit')
                 }
             }
         }
