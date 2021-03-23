@@ -505,7 +505,7 @@ const mainGameLoop = () => {
         }else if(dungeonHeart.round === 7) {
             buildTimer(roundSeven, 5000)
             roundSeven.enemies.forEach(enemy => enemy.render())
-            if(roundFive.allEnemiesDead() && dungeonHeart.checkAlive()) {
+            if(roundFseven.allEnemiesDead() && dungeonHeart.checkAlive()) {
                 dungeonHeart.round++
             }
         } else if(dungeonHeart.round === 8) {
