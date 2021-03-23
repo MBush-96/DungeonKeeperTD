@@ -116,7 +116,7 @@ const getRandFloat = (minNum, maxNum) => {
 }
 
 class Projectile {
-    constructor(x, y, width=20, height=10) {
+    constructor(x, y, width=10, height=5) {
         this.x = x
         this.y = y
         this.width = width
@@ -332,9 +332,9 @@ class Enemy {
     }
     checkCollision(other, enemyArr) {
         let index = enemyArr.indexOf(this)
-        const xHit = other.x <= this.x && other.x >= other.x + other.width && other.y >= this.y && other.y <= this.y + this.height
-        const horizHit = this.x >= other.x && this.x + this.width < other.x + other.width
-        const vertHit = this.y >= other.y && this.y + this.height < other.y + other.height
+        // const xHit = other.x <= this.x && other.x >= other.x + other.width && other.y >= this.y && other.y <= this.y + this.height
+        const horizHit = this.x <= other.x + other.width && this.x + this.width > other.x
+        const vertHit = this.y <= other.y + other.height && this.y + this.height > other.y
         if(horizHit && vertHit && this.alive) {
             //if enemy is colliding with dungeon heart
             if (other instanceof DungeonHeart) {
@@ -345,15 +345,12 @@ class Enemy {
             // if enemy is colliding with traps
             } else if(other instanceof Trap && other.trigger && other.trapType === 'spike') {
                 this.takeDamage(enemyArr)
-            }
-        }
-        if(xHit) {
-            if(other instanceof Projectile) {
-                this.takeDamage(enemyArr)
+            } else if(other instanceof Projectile) {
+                    this.takeDamage(enemyArr)
+                }
             }
         }
     }
-}
 
 //round class use for making new round enemies and checking if all 
 //enemies in round are dead
@@ -433,6 +430,14 @@ const roundSix = new Round([
     new Enemy(2, 10),
 ])
 
+const roundSeven = new Round([
+    new Enemy(1, 10),
+    new Enemy(2, 10),
+    new Enemy(1, 10),
+    new Enemy(2, 10),
+    new Enemy(1, 10),
+    new Enemy(2, 4)
+])
 // when a trap is made it will be pushed into this arr
 const traps = []
 // control enemy movement collision and draw to screen
@@ -497,8 +502,15 @@ const mainGameLoop = () => {
             if(roundSix.allEnemiesDead() && dungeonHeart.checkAlive()) {
                 dungeonHeart.round++
             }
-        } else if(dungeonHeart.round === 7) {
+        }else if(dungeonHeart.round === 7) {
+            buildTimer(roundSeven, 5000)
+            roundSeven.enemies.forEach(enemy => enemy.render())
+            if(roundFive.allEnemiesDead() && dungeonHeart.checkAlive()) {
+                dungeonHeart.round++
+            }
+        } else if(dungeonHeart.round === 8) {
             hideGame()
+            clearInterval(intervalId)
             victoryScreen.classList.remove('hidden')
             document.querySelector('.dungeonheart_power').textContent = dungeonHeart.health
             document.querySelector('.victorybtn').addEventListener('click', () => {
@@ -507,6 +519,7 @@ const mainGameLoop = () => {
         }
         if(!dungeonHeart.checkAlive()) {
             hideGame()
+            clearInterval(intervalId)
             gameOverScreen.classList.remove('hidden')
             document.querySelector('.roundachieved').textContent = dungeonHeart.round
             document.querySelector('.gameoverbtn').addEventListener('click', () => {
