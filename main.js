@@ -116,7 +116,7 @@ const getRandFloat = (minNum, maxNum) => {
 }
 
 class Projectile {
-    constructor(x, y, width=10, height=5) {
+    constructor(x, y, width=20, height=10) {
         this.x = x
         this.y = y
         this.width = width
